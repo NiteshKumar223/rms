@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "748021482392",
+    "project_id": "rmsapp-nvd",
+    "storage_bucket": "rmsapp-nvd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748021482392:android:4d48adec1802e96c15e1ed",
+        "android_client_info": {
+          "package_name": "com.example.rms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjJZg2wYJvzLd5z3zoyZcXrUqDvecHYLA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
