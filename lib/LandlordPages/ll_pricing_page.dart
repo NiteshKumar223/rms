@@ -3,13 +3,11 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rms/customui/uihelper.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../customui/custom_colors.dart';
 
 class LandlordPricingPage extends StatefulWidget {
@@ -264,20 +262,7 @@ class _LandlordPricingPageState extends State<LandlordPricingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Ccolor.primarycolor,
-        title: Text(
-          "Landlord Pricing",
-          style: TextStyle(
-            fontSize: 21,
-            color: Ccolor.white,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.8,
-          ),
-        ),
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Ccolor.white, size: 30.0),
-      ),
+      appBar: UiHelper.customAppbar("Landlord Pricing"),
       body: Container(
         padding: const EdgeInsets.all(5),
         height: MediaQuery.of(context).size.height,
@@ -309,7 +294,10 @@ class _LandlordPricingPageState extends State<LandlordPricingPage> {
                               : Icon(Icons.qr_code, color: Ccolor.grey, size: 250),
                         ),
                         Divider(color: Ccolor.primarycolor, thickness: 2),
-                        const Text("Tap to upload your QR to receive Payment"),
+                        const Text(
+                          "Tap to upload your QR to receive Payment",
+                        style: TextStyle(fontSize: 12)
+                        ),
                       ],
                     ),
                   ),
@@ -380,7 +368,7 @@ class _LandlordPricingPageState extends State<LandlordPricingPage> {
                     UiHelper.CustomAlertBox(
                         (context), "Something went wrong ?");
                   }
-                }, "Submit"),
+                }, "Submit Price"),
                 const SizedBox(height: 20),
                 UiHelper.CustomButton(() {
                   if (_formKey.currentState?.validate() == true) {
@@ -389,10 +377,10 @@ class _LandlordPricingPageState extends State<LandlordPricingPage> {
                   } else {
                     UiHelper.CustomAlertBox(context, "Something went wrong?");
                   }
-                }, "Actual Update"),
+                }, "Update Price"),
                 const SizedBox(height: 50),
                 Container(
-                  height: 500,
+                  height: 510,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     color: Ccolor.white,
@@ -434,7 +422,7 @@ class _LandlordPricingPageState extends State<LandlordPricingPage> {
                 const SizedBox(height: 10),
                 UiHelper.CustomButton(() {
                   updateData();
-                }, "Update"),
+                }, "Fatch Updated Price"),
                 const SizedBox(height: 20),
               ],
             ),

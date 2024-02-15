@@ -11,16 +11,7 @@ class GuestDashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Ccolor.primarycolor,
-        title: Text("Guest Dashboard",
-            style: TextStyle(
-                color: Ccolor.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8)),
-        centerTitle: true,
-        iconTheme: IconThemeData(color: Ccolor.white, size: 30.0),
-      ),
+      appBar: UiHelper.customAppbar("Guest Dashboard"),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Container(

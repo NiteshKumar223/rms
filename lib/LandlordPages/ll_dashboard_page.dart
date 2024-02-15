@@ -4,7 +4,6 @@ import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rms/CommonPages/about_us_page.dart';
-import 'package:rms/CommonPages/available_rooms_page.dart';
 import 'package:rms/CommonPages/privacy_policy_page.dart';
 import 'package:rms/LandlordPages/ll_pricing_page.dart';
 import 'package:rms/LandlordPages/ll_tenants_page.dart';
@@ -12,7 +11,6 @@ import 'package:rms/customui/uihelper.dart';
 import 'package:rms/main.dart';
 
 import 'll_comp_box_page.dart';
-import '../customui/appbar.dart';
 import '../customui/custom_colors.dart';
 import 'll_add_room_page.dart';
 import 'll_collect_Page.dart';
@@ -40,7 +38,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
   void initState() {
     super.initState();
     // Get the currently logged-in user
-    loggedInUser = FirebaseAuth.instance.currentUser ?? null;
+    loggedInUser = FirebaseAuth.instance.currentUser;
     // Fetch user data from Firestore
     FirebaseFirestore.instance
         .collection('users')
@@ -80,14 +78,14 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
     return Scaffold(
       appBar: UiHelper.customAppbar("Landlord Dashboard"),
       drawer: Drawer(
-        width: 200,
+        width: 230,
         // surfaceTintColor: Colors.red,
         child: Column(
           // padding: EdgeInsets.zero,
           children: [
             Container(
               height: 140,
-              width: 200,
+              width: 230,
               decoration: BoxDecoration(
                 color: Ccolor.secondarycolor,
               ),
@@ -104,7 +102,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
                   ),
                   const SizedBox(height: 15),
                   Text(uName,
-                      style: TextStyle(color: Ccolor.white, fontSize: 20)),
+                      style: TextStyle(color: Ccolor.white, fontSize: 18)),
                 ],
               ),
             ),
@@ -112,7 +110,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
               leading: const Icon(
                 Icons.home,
               ),
-              title: const Text('Home'),
+              title: const Text('Home',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.pop(context);
               },
@@ -121,7 +119,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
               leading: const Icon(
                 Icons.person,
               ),
-              title: const Text('My Profile'),
+              title: const Text('My Profile',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const LandlordProfilePage();
@@ -132,7 +130,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
               leading: const Icon(
                 Icons.people,
               ),
-              title: const Text('My Tenants'),
+              title: const Text('My Tenants',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const LandlordTenantsPage();
@@ -143,7 +141,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
               leading: const Icon(
                 Icons.monetization_on,
               ),
-              title: const Text('My Pricing'),
+              title: const Text('My Pricing',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return const LandlordPricingPage();
@@ -154,7 +152,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
               leading: const Icon(
                 Icons.info,
               ),
-              title: const Text('About Us'),
+              title: const Text('About Us',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return AboutUsPage();
@@ -165,7 +163,7 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
               leading: const Icon(
                 Icons.privacy_tip_sharp,
               ),
-              title: const Text('Privacy Policy'),
+              title: const Text('Privacy Policy',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(
                   context,
@@ -179,13 +177,13 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
                 Icons.logout,
                 color: Ccolor.red,
               ),
-              title: Text('Log Out', style: TextStyle(color: Ccolor.red)),
+              title: Text('Log Out', style: TextStyle(fontSize: 16,color: Ccolor.red)),
               onTap: () {
                 logout();
               },
             ),
             const Spacer(),
-            const Text("Version : 1.0.0"),
+            const Text("Version : 1.0.0",style: TextStyle(fontSize: 10)),
             const SizedBox(height: 20),
           ],
         ),

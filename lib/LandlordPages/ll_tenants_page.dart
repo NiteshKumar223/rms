@@ -33,19 +33,7 @@ class _LandlordTenantsPageState extends State<LandlordTenantsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Ccolor.primarycolor,
-          title: Text(
-            "My Tenants",
-            style: TextStyle(
-                fontSize: 21,
-                color: Ccolor.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8),
-          ),
-          centerTitle: true,
-          iconTheme: IconThemeData(color: Ccolor.white, size: 30.0),
-        ),
+        appBar: UiHelper.customAppbar("My Tenants"),
         body: StreamBuilder(
             stream: tenantsStream,
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {

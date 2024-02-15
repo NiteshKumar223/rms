@@ -73,15 +73,7 @@ class _TenantLoginPageState extends State<TenantLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Ccolor.primarycolor,
-        title: Text("Tenant Login",
-            style: TextStyle(
-                color: Ccolor.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8)),
-        centerTitle: true,
-      ),
+      appBar: UiHelper.customAppbar("Tenant Login"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -152,7 +144,7 @@ class _TenantLoginPageState extends State<TenantLoginPage> {
                     child: Text(
                       "Register",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         color: Ccolor.primarycolor,
                         fontWeight: FontWeight.bold,
                       ),
@@ -170,7 +162,7 @@ class _TenantLoginPageState extends State<TenantLoginPage> {
                   child: Text(
                     "Forgot Password",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       color: Ccolor.primarycolor,
                       fontWeight: FontWeight.bold,
                     ),

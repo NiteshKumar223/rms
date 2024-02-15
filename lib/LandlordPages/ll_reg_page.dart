@@ -54,16 +54,7 @@ class _LandlordRegistrationPageState extends State<LandlordRegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Ccolor.primarycolor,
-        title: Text("Landlord Registration",
-            style: TextStyle(
-                fontSize: 21,
-                color: Ccolor.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8)),
-        centerTitle: true,
-      ),
+      appBar: UiHelper.customAppbar("Landlord Registration"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(

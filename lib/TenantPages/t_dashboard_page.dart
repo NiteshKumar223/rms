@@ -73,14 +73,14 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
     return Scaffold(
       appBar: UiHelper.customAppbar('Tenant Dashboard'),
       drawer: Drawer(
-        width: 200,
+        width: 230,
         // surfaceTintColor: Colors.red,
         child: Column(
           // padding: EdgeInsets.zero,
           children: [
             Container(
               height: 140,
-              width: 200,
+              width: 230,
               decoration: BoxDecoration(
                 color: Ccolor.secondarycolor,
               ),
@@ -96,7 +96,7 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
                             size: 50, color: Ccolor.primarycolor)),
                   ),
                   const SizedBox(height: 15),
-                  Text(tName,style: TextStyle(color: Ccolor.white, fontSize: 18)),
+                  Text(tName,style: TextStyle(color: Ccolor.white, fontSize: 16)),
                 ],
               ),
             ),
@@ -104,7 +104,7 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
               leading: const Icon(
                 Icons.home,
               ),
-              title: const Text('Home'),
+              title: const Text('Home',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.pop(context);
               },
@@ -113,7 +113,7 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
               leading: const Icon(
                 Icons.person,
               ),
-              title: const Text('My Profile'),
+              title: const Text('My Profile',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return TenantProfilePage();
@@ -124,7 +124,7 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
               leading: const Icon(
                 Icons.info,
               ),
-              title: const Text('About Us'),
+              title: const Text('About Us',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return AboutUsPage();
@@ -135,7 +135,7 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
               leading: const Icon(
                 Icons.privacy_tip_sharp,
               ),
-              title: const Text('Privacy Policy'),
+              title: const Text('Privacy Policy',style: TextStyle(fontSize: 14)),
               onTap: () {
                 Navigator.push(
                     context,
@@ -149,13 +149,13 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
                 Icons.logout,
                 color: Ccolor.red,
               ),
-              title: Text('Log Out', style: TextStyle(color: Ccolor.red)),
+              title: Text('Log Out', style: TextStyle(color: Ccolor.red,fontSize: 14)),
               onTap: () {
                 logout();
               },
             ),
             const Spacer(),
-            const Text("Version : 1.0.0"),
+            const Text("Version : 1.0.0",style: TextStyle(fontSize: 10)),
             const SizedBox(height: 20),
           ],
         ),

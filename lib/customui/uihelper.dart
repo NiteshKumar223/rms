@@ -12,11 +12,11 @@ class UiHelper {
         style: TextStyle(
             color: Ccolor.white,
             fontWeight: FontWeight.bold,
-            fontSize: 21,
+            fontSize: 18,
             letterSpacing: 0.8),
       ),
       centerTitle: true,
-      iconTheme: IconThemeData(color: Ccolor.white, size: 30.0),
+      iconTheme: IconThemeData(color: Ccolor.white, size: 25.0),
     );
   }
   // custom textfield
@@ -35,13 +35,13 @@ class UiHelper {
           controller: controller,
           keyboardType: inputType,
           validator: validator,
-          maxLines: isMultiline ? null : 1,
-          style: const TextStyle(fontSize: 16),
+          maxLines: isMultiline ? 3 : 1,
+          style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(
             labelText: text,
             hintText: text,
-            labelStyle: const TextStyle(fontSize: 16),
-            hintStyle: const TextStyle(fontSize: 16),
+            labelStyle: const TextStyle(fontSize: 14),
+            hintStyle: const TextStyle(fontSize: 14),
             enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide(width: 2.0, color: Ccolor.primarycolor)),
@@ -99,7 +99,7 @@ class UiHelper {
       ),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontSize: 20),
+        style: const TextStyle(color: Colors.white, fontSize: 16),
       ),
     );
   }
@@ -123,7 +123,7 @@ class UiHelper {
                 },
                 child: Text(
                   "OK",
-                  style: TextStyle(fontSize: 20, color: Ccolor.white),
+                  style: TextStyle(fontSize: 14, color: Ccolor.white),
                 ),
               ),
             ],
@@ -140,7 +140,7 @@ class UiHelper {
         onPressed: ontap,
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
-          fixedSize: const Size(250, 40),
+          fixedSize: const Size(300, 40),
           backgroundColor: bcolor,
         ),
         child: Text(btnName,
@@ -155,8 +155,8 @@ class UiHelper {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(collTitle,
-            style: TextStyle(fontSize: 14, color: Ccolor.primarycolor)),
-        Text(collData, style: TextStyle(fontSize: 14, color: Ccolor.black)),
+            style: TextStyle(fontSize: 12, color: Ccolor.primarycolor)),
+        Text(collData, style: TextStyle(fontSize: 12, color: Ccolor.black)),
       ],
     );
   }

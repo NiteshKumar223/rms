@@ -82,10 +82,10 @@ class _LandlordProfilePageState extends State<LandlordProfilePage> {
                               child: Icon(Icons.person,
                                   size: 50, color: Ccolor.primarycolor)),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         Text(landlordData['llName'],
                             style:
-                                TextStyle(color: Ccolor.white, fontSize: 20)),
+                                TextStyle(color: Ccolor.white, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -142,9 +142,9 @@ class ProfileData {
       children: [
         Text(collTitle,
             style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Ccolor.black)),
+                color: Ccolor.primarycolor)),
         Text(collData, style: TextStyle(fontSize: 14, color: Ccolor.black)),
       ],
     );

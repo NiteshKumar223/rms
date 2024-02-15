@@ -65,15 +65,7 @@ class _TenantRegistrationPageState extends State<TenantRegistrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Ccolor.primarycolor,
-        title: Text("Tenant Registration",
-            style: TextStyle(
-                color: Ccolor.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8)),
-        centerTitle: true,
-      ),
+      appBar: UiHelper.customAppbar("Tenant Registration"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(

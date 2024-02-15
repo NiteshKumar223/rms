@@ -74,16 +74,7 @@ class _LandlordLoginPageState extends State<LandlordLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Ccolor.primarycolor,
-        title: Text("Landlord Login",
-            style: TextStyle(
-                fontSize: 21,
-                color: Ccolor.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8)),
-        centerTitle: true,
-      ),
+      appBar: UiHelper.customAppbar("Landlord Login"),
       body: Form(
         key: _formKey,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -146,7 +137,7 @@ class _LandlordLoginPageState extends State<LandlordLoginPage> {
                 child: Text(
                   "Register",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     color: Ccolor.primarycolor,
                     fontWeight: FontWeight.bold,
                   ),
@@ -164,7 +155,7 @@ class _LandlordLoginPageState extends State<LandlordLoginPage> {
               child: Text(
                 "Forgot Password",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Ccolor.primarycolor,
                   fontWeight: FontWeight.bold,
                 ),

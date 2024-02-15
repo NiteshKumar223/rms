@@ -82,10 +82,10 @@ class _TenantProfilePageState extends State<TenantProfilePage> {
                               child: Icon(Icons.person,
                                   size: 50, color: Ccolor.primarycolor)),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         Text(tenantData['tName'],
                             style:
-                                TextStyle(color: Ccolor.white, fontSize: 20)),
+                                TextStyle(color: Ccolor.white, fontSize: 18)),
                       ],
                     ),
                   ),
@@ -114,10 +114,10 @@ class _TenantProfilePageState extends State<TenantProfilePage> {
                           children: [
                             Text("Permanent Address :",
                                 style: TextStyle(
-                                    fontSize: 16, color: Ccolor.black)),
+                                    fontSize: 16, color: Ccolor.primarycolor)),
                             SizedBox(
-                                height: 100,
-                                width: 170,
+                                height: 150,
+                                width: 160,
                                 child: Text(tenantData['tAddress'],
                                     style: TextStyle(
                                         fontSize: 14, color: Ccolor.black))),

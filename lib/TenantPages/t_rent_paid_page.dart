@@ -69,7 +69,7 @@ class _TenantRentPaidPageState extends State<TenantRentPaidPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
-                      height: 275,
+                      height: 300,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           color: Ccolor.white,
@@ -83,12 +83,12 @@ class _TenantRentPaidPageState extends State<TenantRentPaidPage> {
                             children: [
                               Text("Deposit Date :",
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.primarycolor)),
                               Text(paidRentData['dDate'],
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.red)),
                             ],
@@ -121,12 +121,12 @@ class _TenantRentPaidPageState extends State<TenantRentPaidPage> {
                             children: [
                               Text("TOTAL RENT :",
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.primarycolor)),
                               Text("\u{20B9} ${paidRentData['totalRent']}",
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.primarycolor)),
                             ],

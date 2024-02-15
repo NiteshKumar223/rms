@@ -128,13 +128,13 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Text('No response available.'),
                     );
                   }
@@ -153,15 +153,15 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Problem:",style: TextStyle(color: Ccolor.primarycolor)),
-                              Text(restitle),
+                              Text("Problem:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
+                              Text(restitle,style: TextStyle(fontSize: 13,color: Ccolor.black)),
                             ],
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Description:",style: TextStyle(color: Ccolor.primarycolor)),
-                              Text(resdescription),
+                              Text("Description:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
+                              Text(resdescription,style: TextStyle(fontSize: 12,color: Ccolor.black)),
                             ],
                           ),
                         ),
@@ -189,13 +189,13 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
           }
 
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
+            return const Center(
               child: Text('No response available.'),
             );
           }
@@ -214,15 +214,15 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Problem:",style: TextStyle(color: Ccolor.primarycolor)),
-                      Text(comtitle),
+                      Text("Problem:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
+                      Text(comtitle,style: TextStyle(fontSize: 13,color: Ccolor.black)),
                     ],
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Flat,Room No,Description:",style: TextStyle(color: Ccolor.primarycolor)),
-                      Text(comdescription),
+                      Text("Flat,Room No,Description:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
+                      Text(comdescription,style: TextStyle(fontSize: 12,color: Ccolor.black)),
                     ],
                   ),
                 ),

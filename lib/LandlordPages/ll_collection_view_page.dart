@@ -68,7 +68,7 @@ class _LandlordCollectionViewPageState
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
-                      height: 275,
+                      height: 280,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           color: Ccolor.white,
@@ -82,12 +82,12 @@ class _LandlordCollectionViewPageState
                             children: [
                               Text("Deposit Date :",
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.primarycolor)),
                               Text(paidRentData['dDate'],
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.red)),
                             ],
@@ -112,7 +112,7 @@ class _LandlordCollectionViewPageState
                           UiHelper.customRowData("Water Charge :",
                               "\u{20B9} ${paidRentData['waterRent']}"),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.only(top: 8,bottom: 8),
                             child: Divider(height: 3, color: Ccolor.black),
                           ),
                           Row(
@@ -120,12 +120,12 @@ class _LandlordCollectionViewPageState
                             children: [
                               Text("TOTAL RENT :",
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.primarycolor)),
                               Text("\u{20B9} ${paidRentData['totalRent']}",
                                   style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color: Ccolor.primarycolor)),
                             ],

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:rms/LandlordPages/ll_login_page.dart';
 import 'package:rms/customui/custom_colors.dart';
 import 'package:rms/customui/uihelper.dart';
-import 'CommonPages/available_rooms_page.dart';
 import 'CommonPages/forgot_password.dart';
 import 'GuestPages/g_dashboard_page.dart';
 import 'LandlordPages/ll_reg_page.dart';
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
         ),
         home:
         // LoginPage(),
-        CheckUser(),
+        const CheckUser(),
         // MyHomePage(),
         // LoginPage(),
       ),
@@ -62,123 +61,38 @@ class LoginPage extends StatelessWidget {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 80),
-              Image.asset("assets/images/rms_logo.PNG", width: 150, height: 150),
-              const SizedBox(height: 60),
-              UiHelper.CustomButton(() {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LandlordLoginPage(),
-                  ),
-                );
-              }, "Landlord Login"),
-              const SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("I don't have an Account  ",
-                      style: TextStyle(fontSize: 16)),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => LandlordRegistrationPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Ccolor.primarycolor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ForgotPassword()),
-                    );
-                  },
-                  child: Text(
-                    "Forgot Password",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Ccolor.primarycolor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-              const SizedBox(height: 50),
-              UiHelper.CustomButton(() {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TenantLoginPage(),
-                  ),
-                );
-              }, "Tenant Login"),
-              const SizedBox(height: 15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("I don't have an Account  ",
-                      style: TextStyle(fontSize: 16)),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TenantRegistrationPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Ccolor.primarycolor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ForgotPassword()),
-                    );
-                  },
-                  child: Text(
-                    "Forgot Password",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Ccolor.primarycolor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-              const SizedBox(height: 50),
-              UiHelper.CustomButton(() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GuestDashboardPage(),
-                  ),
-                );
-              }, "As a Guest"),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/rms_logo.PNG", width: 100, height: 100),
+            const SizedBox(height: 60),
+            UiHelper.CustomButton(() {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LandlordLoginPage(),
+                ),
+              );
+            }, "Landlord Login"),
+            const SizedBox(height: 30),
+            UiHelper.CustomButton(() {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TenantLoginPage(),
+                ),
+              );
+            }, "Tenant Login"),
+            const SizedBox(height: 30),
+            UiHelper.CustomButton(() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const GuestDashboardPage(),
+                ),
+              );
+            }, "As a Guest"),
+          ],
         ),
       ),
     );

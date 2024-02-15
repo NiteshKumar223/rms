@@ -204,7 +204,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Tap to choose images from Gallery"),
+                          Text("Pick from Gallery"),
                           Icon(Icons.image),
                         ],
                       ),

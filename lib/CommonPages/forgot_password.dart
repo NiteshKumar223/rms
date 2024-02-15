@@ -31,16 +31,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text("Password Reset",
-              style: TextStyle(
-                  fontSize: 21,
-                  color: Ccolor.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8)),
-          backgroundColor: Ccolor.primarycolor,
-        ),
+        appBar: UiHelper.customAppbar("Password Reset"),
         body: Form(
           key: _formKey,
           child: Column(
