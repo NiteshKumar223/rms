@@ -60,7 +60,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
     });
     imageUrl =
         "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1703520381~exp=1703520981~hmac=fda9b147134991e9028f877ef241a1d2bed69d739686dbed5fcbbdff08d6d09a";
-    elePerUnit =double.tryParse("Laoding..");
+    elePerUnit = double.tryParse("Laoding..");
     roomRent = double.tryParse("Laoding..");
     btCleaningCharge = double.tryParse("Laoding..");
     waterCharge = double.tryParse("Laoding..");
@@ -120,7 +120,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
       setState(() {
         imageUrl =
             "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1703520381~exp=1703520981~hmac=fda9b147134991e9028f877ef241a1d2bed69d739686dbed5fcbbdff08d6d09a";
-        elePerUnit =double.tryParse("Laoding..");
+        elePerUnit = double.tryParse("Laoding..");
         roomRent = double.tryParse("Laoding..");
         btCleaningCharge = double.tryParse("Laoding..");
         waterCharge = double.tryParse("Laoding..");
@@ -179,8 +179,6 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
       setState(() {
         tenantNames = names;
       });
-
-
     } catch (e) {
       SnackBar(
         content: Text('Error fetching tenant names: $e'),
@@ -247,7 +245,6 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
         color: Ccolor.white,
         height: MediaQuery.of(context).size.height,
@@ -258,134 +255,147 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
             child: Column(
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-              const SizedBox(height: 10),
-              UiHelper.CustomDropdown(
-                items: tenantNames,
-                hintText: 'Select Tenant',
-                onChanged: (value) {
-                  setState(() {
-                    selectedTenant = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Tenant selection is Required");
-                  }
-                  return null;
-                },
-              ),
-              // Text("${selectedTenant}'s previous ele Unit is $preEleUnit"),
-              UiHelper.CustomTextField(
-                elePreMtrController,
-                "Previous Meter Reading",
-                TextInputType.number,
-                validator: (value) {
-                  String pattern = r'(^[0-9]*$)';
-                  RegExp regExp = RegExp(pattern);
-                  if (value == null || value.isEmpty) {
-                    return UiHelper.CustomAlertBox((context),
-                        "Previous meter reading is Required for calculation of current month electricity bill");
-                  } else if (!regExp.hasMatch(value)) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Meter reading must be in digits");
-                  }
-                  return null;
-                },
-              ),
-              UiHelper.CustomTextField(
-                eleCurtMtrController,
-                "Current Meter Reading",
-                TextInputType.number,
-                validator: (value) {
-                  String pattern = r'(^[0-9]*$)';
-                  RegExp regExp = RegExp(pattern);
-                  if (value == null || value.isEmpty) {
-                    return UiHelper.CustomAlertBox((context),
-                        "Current meter reading is Required for calculation of current month electricity bill");
-                  } else if (!regExp.hasMatch(value)) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Meter reading must be in digits");
-                  }
-                  return null;
-                },
-              ),
+                  const SizedBox(height: 10),
+                  UiHelper.CustomDropdown(
+                    items: tenantNames,
+                    hintText: 'Select Tenant',
+                    onChanged: (value) {
+                      setState(() {
+                        selectedTenant = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return UiHelper.CustomAlertBox(
+                            (context), "Tenant selection is Required");
+                      }
+                      return null;
+                    },
+                  ),
+                  // Text("${selectedTenant}'s previous ele Unit is $preEleUnit"),
+                  UiHelper.CustomTextField(
+                    elePreMtrController,
+                    "Previous Meter Reading",
+                    TextInputType.number,
+                    validator: (value) {
+                      String pattern = r'(^[0-9]*$)';
+                      RegExp regExp = RegExp(pattern);
+                      if (value == null || value.isEmpty) {
+                        return UiHelper.CustomAlertBox((context),
+                            "Previous meter reading is Required for calculation of current month electricity bill");
+                      } else if (!regExp.hasMatch(value)) {
+                        return UiHelper.CustomAlertBox(
+                            (context), "Meter reading must be in digits");
+                      }
+                      return null;
+                    },
+                  ),
+                  UiHelper.CustomTextField(
+                    eleCurtMtrController,
+                    "Current Meter Reading",
+                    TextInputType.number,
+                    validator: (value) {
+                      String pattern = r'(^[0-9]*$)';
+                      RegExp regExp = RegExp(pattern);
+                      if (value == null || value.isEmpty) {
+                        return UiHelper.CustomAlertBox((context),
+                            "Current meter reading is Required for calculation of current month electricity bill");
+                      } else if (!regExp.hasMatch(value)) {
+                        return UiHelper.CustomAlertBox(
+                            (context), "Meter reading must be in digits");
+                      }
+                      return null;
+                    },
+                  ),
 
-              UiHelper.customCalculator(() {
-                calculateTotalEleBill();
-                setState(() {
-                  buttonColor1 = Colors.red;
-                });
-              }, "Calculate Electricity Bill", buttonColor1),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 5),
-                    UiHelper.customRowData("Room Rent:", "\u{20B9} $roomRent"),
-                    const SizedBox(height: 5),
-                    UiHelper.customRowData("Total Electricity Bill:", "\u{20B9} $totalEleBill"),
-                    const SizedBox(height: 5),
-                    UiHelper.customRowData("Toilet/Bathroom Cleaning:", "\u{20B9} $btCleaningCharge"),
-                    const SizedBox(height: 5),
-                    UiHelper.customRowData("Water Charge:", "\u{20B9} $waterCharge"),
-                    const SizedBox(height: 5),
-                    Divider(thickness: 2,color: Ccolor.primarycolor),
-                    const SizedBox(height:5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  UiHelper.customCalculator(() {
+                    calculateTotalEleBill();
+                    setState(() {
+                      buttonColor1 = Colors.red;
+                    });
+                  }, "Calculate Electricity Bill", buttonColor1),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
                       children: [
-                        Text("All Total Rent :",style: TextStyle(fontSize: 18,color: Ccolor.black,fontWeight: FontWeight.bold)),
-                        Text("\u{20B9} $totalRentAmt",style: TextStyle(fontSize: 18,color: Ccolor.black,fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 5),
+                        UiHelper.customRowData(
+                            "Room Rent:", "\u{20B9} $roomRent"),
+                        const SizedBox(height: 5),
+                        UiHelper.customRowData("Total Electricity Bill:",
+                            "\u{20B9} $totalEleBill"),
+                        const SizedBox(height: 5),
+                        UiHelper.customRowData("Toilet/Bathroom Cleaning:",
+                            "\u{20B9} $btCleaningCharge"),
+                        const SizedBox(height: 5),
+                        UiHelper.customRowData(
+                            "Water Charge:", "\u{20B9} $waterCharge"),
+                        const SizedBox(height: 5),
+                        Divider(thickness: 2, color: Ccolor.primarycolor),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("All Total Rent :",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Ccolor.black,
+                                    fontWeight: FontWeight.bold)),
+                            Text("\u{20B9} $totalRentAmt",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Ccolor.black,
+                                    fontWeight: FontWeight.bold)),
+                          ],
+                        )
                       ],
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(height: 15.0),
-              UiHelper.customCalculator(() {
-                calculateTotalRent();
-                setState(() {
-                  buttonColor2 = Colors.red;
-                });
-              }, "Calculate Total Rent",buttonColor2 ),
+                    ),
+                  ),
+                  const SizedBox(height: 15.0),
+                  UiHelper.customCalculator(() {
+                    calculateTotalRent();
+                    setState(() {
+                      buttonColor2 = Colors.red;
+                    });
+                  }, "Calculate Total Rent", buttonColor2),
 
-              const SizedBox(height: 10),
-              ListTile(
-                title: const Text('Cash', style: TextStyle(fontSize: 16)),
-                leading: Radio<PaymentMode>(
-                  value: PaymentMode.Cash,
-                  groupValue: _mode,
-                  onChanged: (PaymentMode? value) {
-                    setState(() {
-                      _mode = value;
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('Online', style: TextStyle(fontSize: 16)),
-                leading: Radio<PaymentMode>(
-                  value: PaymentMode.Online,
-                  groupValue: _mode,
-                  onChanged: (PaymentMode? value) {
-                    setState(() {
-                      _mode = value;
-                      showQr();
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              UiHelper.CustomButton(() {
-                if (_formKey.currentState?.validate() == true) {
-                  rentCollection();
-                } else {
-                  UiHelper.CustomAlertBox((context), "Something went wrong ?");
-                }
-              }, "Submit"),
-              const SizedBox(height: 80),
-            ]),
+                  const SizedBox(height: 10),
+                  ListTile(
+                    title: const Text('Cash', style: TextStyle(fontSize: 16)),
+                    leading: Radio<PaymentMode>(
+                      value: PaymentMode.Cash,
+                      groupValue: _mode,
+                      onChanged: (PaymentMode? value) {
+                        setState(() {
+                          _mode = value;
+                        });
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Online', style: TextStyle(fontSize: 16)),
+                    leading: Radio<PaymentMode>(
+                      value: PaymentMode.Online,
+                      groupValue: _mode,
+                      onChanged: (PaymentMode? value) {
+                        setState(() {
+                          _mode = value;
+                          showQr();
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  UiHelper.CustomButton(() {
+                    if (_formKey.currentState?.validate() == true) {
+                      rentCollection();
+                    } else {
+                      UiHelper.CustomAlertBox(
+                          (context), "Something went wrong ?");
+                    }
+                  }, "Submit"),
+                  const SizedBox(height: 80),
+                ]),
           ),
         ));
   }

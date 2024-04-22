@@ -25,7 +25,12 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
   final TextEditingController buildingNameCtr = TextEditingController();
   final TextEditingController noOfRoomAvlCtr = TextEditingController();
   final List<String> furnishing = ["No", "Half Furnished", "Fully Furnished"];
-  final List<String> availableFor = ["Only Girls", "Only Boys", "Students", "Family"];
+  final List<String> availableFor = [
+    "Only Girls",
+    "Only Boys",
+    "Students",
+    "Family"
+  ];
   final List<String> parking = ["Not Available", "Two Wheeler", "Four Wheeler"];
   final TextEditingController descAboutRoomCtr = TextEditingController();
   final TextEditingController nearbyAddressCtr = TextEditingController();
@@ -42,7 +47,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
 
   Future<void> pickImages() async {
     final List<XFile>? pickedImages =
-    await ImagePicker().pickMultiImage(imageQuality: 50);
+        await ImagePicker().pickMultiImage(imageQuality: 50);
 
     if (pickedImages != null && pickedImages.isNotEmpty) {
       setState(() {
@@ -50,6 +55,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
       });
     }
   }
+
   Future<void> uploadAvailableRooms() async {
     if (_imageList != null && _imageList!.isNotEmpty) {
       // Upload images to Firebase Storage
@@ -58,7 +64,6 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
       // Save metadata (text fields and image URLs) to Firestore
       await saveMetadataToFirestore(imageUrls);
     }
-
   }
 
   Future<List<String>> uploadImagesToStorage() async {
@@ -82,7 +87,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
     // Create a Firestore document with metadata
     FirebaseAuth llInstance = FirebaseAuth.instance;
     User? user = llInstance.currentUser;
-    if(user != null) {
+    if (user != null) {
       String lluid = user.uid;
       FirebaseFirestore.instance.collection("rooms_available").add({
         'aImageUrls': imageUrls,
@@ -105,8 +110,8 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
             builder: (BuildContext context) {
               return AlertDialog(
                 actionsAlignment: MainAxisAlignment.center,
-                title:
-                Text("Room Listing Successfully", style: TextStyle(fontSize: 16, color: Ccolor.red)),
+                title: Text("Room Listing Successfully",
+                    style: TextStyle(fontSize: 16, color: Ccolor.red)),
                 actions: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -123,11 +128,10 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                 ],
               );
             });
-            // setState(() {
-            //    widget.currindex;
-            // });
+        // setState(() {
+        //    widget.currindex;
+        // });
       });
-
     } else {
       UiHelper.CustomAlertBox(context, "User not found");
     }
@@ -146,8 +150,9 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
       selectedParking = null;
     });
   }
+
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -161,7 +166,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
               children: [
                 Container(
                   height: 320,
-                  width: MediaQuery.of(context).size.width-35,
+                  width: MediaQuery.of(context).size.width - 35,
                   decoration: BoxDecoration(
                     color: Ccolor.white,
                     border: Border.all(color: Ccolor.primarycolor, width: 2),
@@ -171,28 +176,28 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                     children: [
                       // here in this column i want to pick image from gallery
                       if (_imageList != null && _imageList!.isNotEmpty)
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height: 315.0,
-                          // enlargeCenterPage: true,
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            height: 315.0,
+                            // enlargeCenterPage: true,
+                          ),
+                          items: _imageList!.map((XFile image) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  height: 315,
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: Image.file(
+                                    File(image.path),
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
                         ),
-                        items: _imageList!.map((XFile image) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return Container(
-                                height: 315,
-                                width: MediaQuery.of(context).size.width,
-                                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: Image.file(
-                                  File(image.path),
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-
-                            },
-                          );
-                        }).toList(),
-                      ),
                     ],
                   ),
                 ),
@@ -200,14 +205,14 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: ElevatedButton(
-                      onPressed: ()=> pickImages(),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Pick from Gallery"),
-                          Icon(Icons.image),
-                        ],
-                      ),
+                    onPressed: () => pickImages(),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Pick from Gallery"),
+                        Icon(Icons.image),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10.0),
@@ -376,7 +381,8 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                     // Once the operation is complete, hide the dialog
                     ProgressDialog.hide(context);
                   } else {
-                    UiHelper.CustomAlertBox((context), "Something went wrong ?");
+                    UiHelper.CustomAlertBox(
+                        (context), "Something went wrong ?");
                   }
                 }, "Submit"),
                 const SizedBox(height: 20),
@@ -388,11 +394,13 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
     );
   }
 }
+
 class ProgressDialog {
   static void show(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false, // Set to true if you want users to be able to dismiss the dialog by tapping outside
+      barrierDismissible:
+          false, // Set to true if you want users to be able to dismiss the dialog by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
           content: Column(

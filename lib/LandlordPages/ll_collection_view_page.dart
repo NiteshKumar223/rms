@@ -100,8 +100,7 @@ class _LandlordCollectionViewPageState
                           UiHelper.customRowData(
                               "Current Electricity Mtr Reading :",
                               paidRentData['eleCurtMtr']),
-                          UiHelper.customRowData(
-                              "Total Electricity Unit :",
+                          UiHelper.customRowData("Total Electricity Unit :",
                               "${paidRentData['eleUnit']}"),
                           UiHelper.customRowData("Room Rent :",
                               "\u{20B9} ${paidRentData['rmRent']}"),
@@ -112,7 +111,7 @@ class _LandlordCollectionViewPageState
                           UiHelper.customRowData("Water Charge :",
                               "\u{20B9} ${paidRentData['waterRent']}"),
                           Padding(
-                            padding: const EdgeInsets.only(top: 8,bottom: 8),
+                            padding: const EdgeInsets.only(top: 8, bottom: 8),
                             child: Divider(height: 3, color: Ccolor.black),
                           ),
                           Row(

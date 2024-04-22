@@ -1,13 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:rms/LandlordPages/ll_login_page.dart';
-import 'package:rms/customui/custom_colors.dart';
 import 'package:rms/customui/uihelper.dart';
-import 'CommonPages/forgot_password.dart';
 import 'GuestPages/g_dashboard_page.dart';
-import 'LandlordPages/ll_reg_page.dart';
 import 'TenantPages/t_login_page.dart';
-import 'TenantPages/t_reg_page.dart';
 import 'check_user.dart';
 import 'firebase_options.dart';
 
