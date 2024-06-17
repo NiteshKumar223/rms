@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rms/CommonPages/available_rooms_page.dart';
+import 'package:rms/LandlordPages/ll_collect_Page.dart';
 import 'package:rms/TenantPages/t_comp_box_page.dart';
 import 'package:rms/TenantPages/t_profile_page.dart';
 import 'package:rms/TenantPages/t_rent_paid_page.dart';
+import 'package:rms/TenantPages/t_rent_pay_online_page.dart';
 import 'package:rms/customui/uihelper.dart';
 
 import '../CommonPages/about_us_page.dart';
@@ -34,7 +37,7 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
   void initState() {
     super.initState();
     // Get the currently logged-in user
-    loggedInUser = FirebaseAuth.instance.currentUser ?? null;
+    loggedInUser = FirebaseAuth.instance.currentUser;
     // Fetch user data from Firestore
     FirebaseFirestore.instance
         .collection('users')
@@ -48,15 +51,11 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
           ll_uid = documentSnapshot.get('llUid');
           setState(() {});
         } else {
-          const SnackBar(
-            content: Text('User document not found in Database.'),
-          );
+          UiHelper.showsnackbar(context, 'User document not found in Database.');
         }
       },
     ).catchError((error) {
-      SnackBar(
-        content: Text('User document not found in Database : $error'),
-      );
+      UiHelper.showsnackbar(context, 'User document not found in Database : $error');
     });
   }
 
@@ -174,27 +173,37 @@ class _TenantDashboardPageState extends State<TenantDashboardPage> {
         destinations:  <Widget>[
           NavigationDestination(
             selectedIcon: Icon(Icons.home,color: Ccolor.white),
-            icon: Icon(Icons.home),
+            icon: const Icon(Icons.home),
             label: 'Home',
           ),
           NavigationDestination(
+            selectedIcon: Icon(Icons.money,color: Ccolor.white),
+            icon: const Icon(Icons.money),
+            label: 'Pay',
+          ),
+          NavigationDestination(
             selectedIcon: Icon(Icons.view_list_sharp,color: Ccolor.white),
-            icon: Icon(Icons.view_list_sharp),
+            icon: const Icon(Icons.view_list_sharp),
             label: 'Paid',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.question_answer_rounded,color: Ccolor.white),
-            icon: Icon(Icons.question_answer_rounded),
+            icon: const Icon(Icons.question_answer_rounded),
             label: 'Complaints',
           ),
         ],
       ),
       body: DoubleBackToCloseApp(
-        snackBar: const SnackBar(
+        snackBar: SnackBar(
+          backgroundColor: Ccolor.red,
           content: Text('Tap back again to leave'),
         ),
         child: <Widget>[
-          AvailableRoomsPage(),
+          const Padding(
+            padding: EdgeInsets.all(2.0),
+            child: AvailableRoomsPage(),
+          ),
+          TenantRentPayOnlinePage(lluid: ll_uid),
           TenantRentPaidPage(lluid: ll_uid,tname: tName),
           TenantComplaintBoxPage(lluid: ll_uid),
         ][currentPageIndex],

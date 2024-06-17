@@ -1,6 +1,9 @@
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rms/LandlordPages/ll_login_page.dart';
+import 'package:rms/customui/custom_colors.dart';
 import 'package:rms/customui/uihelper.dart';
 import 'll_dashboard_page.dart';
 
@@ -54,96 +57,119 @@ class _LandlordRegistrationPageState extends State<LandlordRegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UiHelper.customAppbar("Landlord Registration"),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 50),
-                UiHelper.CustomTextField(
-                  llNameController,
-                  "Name",
-                  TextInputType.text,
-                  validator: (value) {
-                    String pattern = r'(^[a-zA-Z ]*$)';
+      body: DoubleBackToCloseApp(
+        snackBar: SnackBar(
+          backgroundColor: Ccolor.red,
+          content: Text('Tap back again to leave'),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 50),
+                  UiHelper.CustomTextField(
+                    llNameController,
+                    "Name",
+                    TextInputType.text,
+                    validator: (value) {
+                      String pattern = r'(^[a-zA-Z ]*$)';
+                      RegExp regExp = RegExp(pattern);
+                      if (value == null || value.isEmpty) {
+                        return "Name is Required";
+                      } else if (!regExp.hasMatch(value)) {
+                        return "Name must be a-z and A-Z";
+                      }
+                      return null;
+                    },
+                  ),
+                  UiHelper.CustomTextField(
+                      llMobController, "Mobile No.", TextInputType.number,
+                      validator: (value) {
+                    String pattern = r'(^[0-9]*$)';
                     RegExp regExp = RegExp(pattern);
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Name is Required");
+                      return "Mobile is Required";
+                    } else if (value.length != 10) {
+                      return "Mobile number must 10 digits";
                     } else if (!regExp.hasMatch(value)) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Name must be a-z and A-Z");
+                      return "Mobile Number must be in digits";
                     }
                     return null;
-                  },
-                ),
-                UiHelper.CustomTextField(
-                    llMobController, "Mobile No.", TextInputType.number,
-                    validator: (value) {
-                  String pattern = r'(^[0-9]*$)';
-                  RegExp regExp = RegExp(pattern);
-                  if (value == null || value.isEmpty) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Mobile is Required");
-                  } else if (value.length != 10) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Mobile number must 10 digits");
-                  } else if (!regExp.hasMatch(value)) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Mobile Number must be in digits");
-                  }
-                  return null;
-                }),
-                UiHelper.customLoginSignupTextField(
-                    llEmailController,
-                    "Email",
-                    false,
-                    Icons.email,
-                    TextInputType.emailAddress, validator: (value) {
-                  String pattern =
-                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                  RegExp regExp = RegExp(pattern);
-                  if (value == null || value.isEmpty) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Email is Required");
-                  } else if (!regExp.hasMatch(value)) {
-                    return UiHelper.CustomAlertBox((context), "Invalid Email");
-                  } else {
-                    return null;
-                  }
-                }),
-                UiHelper.customLoginSignupTextField(
-                    llPasswordController,
-                    "Password",
-                    true,
-                    Icons.password,
-                    TextInputType.visiblePassword, validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Password can't be empty");
-                  } else if (value.length < 6) {
-                    return UiHelper.CustomAlertBox(
-                        (context), "Password must be longer than 6 characters");
-                  }
-                  return null;
-                }),
-                const SizedBox(height: 20),
-                UiHelper.CustomButton(
-                  () {
-                    if (_formKey.currentState?.validate() == true) {
-                      register();
+                  }),
+                  UiHelper.customLoginSignupTextField(
+                      llEmailController,
+                      "Email",
+                      false,
+                      Icons.email,
+                      TextInputType.emailAddress, validator: (value) {
+                    String pattern =
+                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                    RegExp regExp = RegExp(pattern);
+                    if (value == null || value.isEmpty) {
+                      return "Email is Required";
+                    } else if (!regExp.hasMatch(value)) {
+                      return "Invalid Email";
                     } else {
-                      UiHelper.CustomAlertBox(
-                          (context), "Something went wrong ?");
+                      return null;
                     }
-                  },
-                  "Register",
-                ),
-                const SizedBox(height: 50),
-              ],
+                  }),
+                  UiHelper.customLoginSignupTextField(
+                      llPasswordController,
+                      "Password",
+                      true,
+                      Icons.password,
+                      TextInputType.visiblePassword, validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Password can't be empty";
+                    } else if (value.length < 6) {
+                      return "Password must be longer than 6 characters";
+                    }
+                    return null;
+                  }),
+                  const SizedBox(height: 20),
+                  UiHelper.CustomButton(
+                    () {
+                      if (_formKey.currentState?.validate() == true) {
+                        register();
+                      } else {
+                        UiHelper.showsnackbar(
+                            (context), "Something went wrong ?");
+                      }
+                    },
+                    "Register",
+                  ),
+                  const SizedBox(height: 50),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an Account  ",
+                          style: TextStyle(fontSize: 16)),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LandlordLoginPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Ccolor.primarycolor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

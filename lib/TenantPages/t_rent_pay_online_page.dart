@@ -1,40 +1,41 @@
+
 // ignore: file_names
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:rms/customui/custom_colors.dart';
 import 'package:rms/customui/uihelper.dart';
 
-enum PaymentMode { cash, online }
+enum PaymentMode {online}
 
-class LandlordCollectPage extends StatefulWidget {
-  const LandlordCollectPage({super.key});
+class TenantRentPayOnlinePage extends StatefulWidget {
+  final String lluid;
+  const TenantRentPayOnlinePage({super.key, required this.lluid});
 
   @override
-  State<LandlordCollectPage> createState() => _LandlordCollectPageState();
+  State<TenantRentPayOnlinePage> createState() => _TenantRentPayOnlinePageState();
 }
 
-class _LandlordCollectPageState extends State<LandlordCollectPage> {
+class _TenantRentPayOnlinePageState extends State<TenantRentPayOnlinePage> {
   TextEditingController elePreMtrController = TextEditingController();
   TextEditingController eleCurtMtrController = TextEditingController();
-  // TextEditingController eleUnitController = TextEditingController();
-  // TextEditingController eleBillController = TextEditingController();
-  // TextEditingController totalRentController = TextEditingController();
   Color buttonColor1 = Ccolor.primarycolor;
   Color buttonColor2 = Ccolor.primarycolor;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  String? get paymentId => null;
 
   @override
   void dispose() {
     elePreMtrController.dispose();
     eleCurtMtrController.dispose();
-    // eleUnitController.dispose();
-    // eleBillController.dispose();
-    // totalRentController.dispose();
+    razorpay.clear();
     super.dispose();
   }
 
@@ -42,16 +43,19 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
   double totalMtrUnits = 0.0;
   double totalRentAmt = 0.0;
 
-  PaymentMode? _mode = PaymentMode.cash;
+  PaymentMode? _mode = PaymentMode.online;
 
   // it is for select the tenant
-  List<Map<String, String>> tenantData = [];
-  // List<String> tenantNames = [];
+  List<String> tenantNames = [];
   String? selectedTenant;
   late User loggedInUser;
   String todayDate = '';
 
   late CollectionReference<Map<String, dynamic>> usersCollection;
+
+  late Razorpay razorpay;
+  var ki = dotenv.env['key_id'];
+  var ks = dotenv.env['key_secret'];
 
   @override
   void initState() {
@@ -69,6 +73,86 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
     btCleaningCharge = double.tryParse("Laoding..");
     waterCharge = double.tryParse("Laoding..");
     llPricingData(context);
+    razorpay = Razorpay();
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, errorHandler);
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, successHandler);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, externalWalletHandler);
+  }
+
+  // payment Gateway
+  void errorHandler(PaymentFailureResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.message!),
+      backgroundColor: Colors.red,
+    ));
+  }
+
+  void successHandler(PaymentSuccessResponse response) {
+    // showDialog(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         backgroundColor: Colors.white,
+    //         actionsAlignment: MainAxisAlignment.center,
+    //         title: const Text("Payment Success"),
+    //         titleTextStyle: const TextStyle(fontSize: 20, color: Colors.green),
+    //         actionsPadding: const EdgeInsets.symmetric(vertical: 0),
+    //         content: SizedBox(
+    //           height: 65,
+    //           child: Column(
+    //             mainAxisAlignment: MainAxisAlignment.center,
+    //             children: [
+    //               Text("Ref Id: ${response.paymentId}"),
+    //               Text("Order Id: ${response.orderId}"),
+    //               Text("Signature Id: ${response.signature}"),
+    //             ],
+    //           ),
+    //         ),
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () => Navigator.pop(context),
+    //             child: const Text(
+    //               "OK",
+    //               style: TextStyle(fontSize: 20, color: Colors.green),
+    //             ),
+    //           ),
+    //         ],
+    //       );
+    //     });
+    ScaffoldMessenger.of(context)
+    .showSnackBar(SnackBar(
+      content: Text("Payment Success: ${response.paymentId!}"),
+      backgroundColor: Colors.green,
+    ));
+    rentCollection(context, response.paymentId!);
+  }
+
+  void externalWalletHandler(ExternalWalletResponse response) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(response.walletName!),
+      backgroundColor: Colors.green,
+    ));
+  }
+
+  void openCheckout(double rs) {
+    var options = {
+      "key": ki,
+      "amount": rs * 100,
+      "name": "RMS",
+      "description": "Payment for Tenancy Services",
+      "timeout": "180",
+      "currency": "INR",
+      "prefill": {
+        "contact": "",
+        "email": "",
+      }
+    };
+    try {
+      razorpay.open(options);
+    } catch (e) {
+      UiHelper.showsnackbar(context, e.toString());
+    }
   }
 
   // Reference to the Firestore collection 'paid_rent'
@@ -98,13 +182,11 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
   }
 
   Future<void> llPricingData(context) async {
-    String? user = await getCurrentUserUid();
-    // User? user = _auth.currentUser;
     try {
       DocumentSnapshot<Map<String, dynamic>> pricingData =
           await FirebaseFirestore.instance
               .collection('pricing_data')
-              .doc(user)
+              .doc(widget.lluid)
               .get();
       // return pricingData;
       setState(() {
@@ -119,8 +201,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
     } catch (e) {
       // print('Error loading user data: $e');
       // Handle errors, e.g., display a placeholder image and default user data
-      UiHelper.showsnackbar(
-          context, "loading user data: Failed ! Try after sometime");
+      UiHelper.showsnackbar(context, "loading user data: Failed ! Try after sometime");
       setState(() {
         imageUrl =
             "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1703520381~exp=1703520981~hmac=fda9b147134991e9028f877ef241a1d2bed69d739686dbed5fcbbdff08d6d09a";
@@ -132,12 +213,15 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
       });
     }
   }
+  
 
-  void rentCollection(context) async {
+  Future rentCollection(context,String payid) async {
     try {
       // Store data in the 'paid_rent' collection
       await paidRentCollection.add({
+        'paymentId': payid,
         'tenantName': selectedTenant,
+        'tenantUid': loggedInUser.uid,
         'elePreMtr': elePreMtrController.text,
         'eleCurtMtr': eleCurtMtrController.text,
         'eleUnit': totalMtrUnits,
@@ -147,7 +231,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
         'waterRent': waterCharge,
         'totalRent': totalRentAmt,
         'payBy': _mode.toString(),
-        'llUid': loggedInUser.uid,
+        'llUid': widget.lluid,
         'dDate': todayDate,
         // Add other fields as needed
       }).then((value) => collectionSuccess());
@@ -157,7 +241,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
       eleCurtMtrController.clear();
       setState(() {
         selectedTenant = null;
-        _mode = PaymentMode.cash;
+        _mode = PaymentMode.online;
       });
 
       // Add any additional logic after storing data if needed
@@ -173,44 +257,19 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
       // Fetch the tenants with type 'tenant' and matching landlord UID
       var snapshot = await usersCollection
           .where('type', isEqualTo: 'tenant')
-          .where('llUid', isEqualTo: loggedInUser.uid)
+          .where('llUid', isEqualTo: widget.lluid)
+          .where('tUid', isEqualTo: loggedInUser.uid)
           .get();
       // Extract tenant names from documents
-      // List<String> names =
-      //     snapshot.docs.map((doc) => doc['tName'] as String).toList();
-      //List<String> mob =
-      // snapshot.docs.map((doc) => doc['tMobile'] as String).toList();
-      List<Map<String, String>> tenants = snapshot.docs.map((doc) {
-        return {
-          'name': doc['tName'] as String,
-          'mobile': doc['tMobile'] as String,
-        };
-      }).toList();
+      List<String> names =
+          snapshot.docs.map((doc) => doc['tName'] as String).toList();
 
       setState(() {
-        tenantData = tenants;
+        tenantNames = names;
       });
     } catch (e) {
       UiHelper.showsnackbar(context, 'Error fetching tenant names: $e');
     }
-  }
-
-  showQr() async {
-    await showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) => AlertDialog(
-        title: const Text('Scan And Pay'),
-        content: Image.network(imageUrl, height: 350, width: 350),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context, 'OK'),
-            child: const Text('Done', style: TextStyle(fontSize: 20)),
-          ),
-        ],
-      ),
-    );
   }
 
   collectionSuccess() {
@@ -232,6 +291,8 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
     );
   }
 
+
+
   void calculateTotalEleBill() async {
     double preMtrRead = double.tryParse(elePreMtrController.text) ?? 0.0;
     double curtMtrRead = double.tryParse(eleCurtMtrController.text) ?? 0.0;
@@ -251,6 +312,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
       totalRentAmt = rm + ele + bt + wtr;
     });
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -265,66 +327,32 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
-                      height: 65,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: Ccolor.primarycolor, width: 2.0),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                            ),
-                            value: selectedTenant,
-                            items: tenantData.map((tenant) {
-                              return DropdownMenuItem<String>(
-                                value: tenant['mobile'],
-                                child: Text(
-                                    '${tenant['name']} (${tenant['mobile']})'),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedTenant = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Tenant selection is Required";
-                              }
-                              return null;
-                            },
-                            hint: Text(
-                              "Select Tenant",
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            isExpanded: true,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 40,
-                            iconEnabledColor: Ccolor.primarycolor,
-                          ),
-                        ),
-                      ),
-                    ),
+                  UiHelper.CustomDropdown(
+                    items: tenantNames,
+                    hintText: 'Select Tenant',
+                    onChanged: (value) {
+                      setState(() {
+                        selectedTenant = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Tenant selection is Required";
+                      }
+                      return null;
+                    },
                   ),
                   // Text("${selectedTenant}'s previous ele Unit is $preEleUnit"),
                   UiHelper.CustomTextField(
                     elePreMtrController,
                     "Previous Meter Reading",
                     TextInputType.number,
-                    validator: (value) {
+                    validator:(value) {
                       String pattern = r'(^[0-9]*$)';
                       RegExp regExp = RegExp(pattern);
                       if (value == null || value.isEmpty) {
-                        return "Previous meter reading is Required for calculation of current month electricity bill";
+                        return 
+                            "Previous meter reading is Required for calculation of current month electricity bill";
                       } else if (!regExp.hasMatch(value)) {
                         return "Meter reading must be in digits";
                       }
@@ -335,7 +363,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
                     eleCurtMtrController,
                     "Current Meter Reading",
                     TextInputType.number,
-                    validator: (value) {
+                    validator:(value) {
                       String pattern = r'(^[0-9]*$)';
                       RegExp regExp = RegExp(pattern);
                       if (value == null || value.isEmpty) {
@@ -375,7 +403,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("All Total Rent :",
+                            Text("Total Rent :",
                                 style: TextStyle(
                                     fontSize: 18,
                                     color: Ccolor.black,
@@ -400,18 +428,6 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
 
                   const SizedBox(height: 10),
                   ListTile(
-                    title: const Text('Cash', style: TextStyle(fontSize: 16)),
-                    leading: Radio<PaymentMode>(
-                      value: PaymentMode.cash,
-                      groupValue: _mode,
-                      onChanged: (PaymentMode? value) {
-                        setState(() {
-                          _mode = value;
-                        });
-                      },
-                    ),
-                  ),
-                  ListTile(
                     title: const Text('Online', style: TextStyle(fontSize: 16)),
                     leading: Radio<PaymentMode>(
                       value: PaymentMode.online,
@@ -419,20 +435,24 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
                       onChanged: (PaymentMode? value) {
                         setState(() {
                           _mode = value;
-                          showQr();
                         });
                       },
                     ),
                   ),
                   const SizedBox(height: 20),
                   UiHelper.CustomButton(() {
+                    
                     if (_formKey.currentState?.validate() == true) {
-                      rentCollection(context);
+                      try {
+                        openCheckout(totalRentAmt);
+                      } catch (e) {
+                        UiHelper.showsnackbar(context, e.toString());
+                      }
                     } else {
                       UiHelper.showsnackbar(
                           (context), "Something went wrong ?");
                     }
-                  }, "Submit"),
+                  }, "Pay"),
                   const SizedBox(height: 80),
                 ]),
           ),

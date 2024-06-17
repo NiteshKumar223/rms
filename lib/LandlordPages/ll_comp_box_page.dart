@@ -43,7 +43,7 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
       'resMessage': resMessage,
       'timestamp': FieldValue.serverTimestamp(),
     }).then((value) {
-      UiHelper.CustomAlertBox(context, "Response is send to your tenants");
+      UiHelper.showsnackbar(context, "response is sent to the tenants");
     });
     resTitleController.clear();
     resMsgController.clear();
@@ -55,23 +55,39 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
 
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getResponse() {
     return resCollection
+        .where('llUid', isEqualTo: ll_uid)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs);
   }
+
   //  fetch complaint for viewing
   final CollectionReference<Map<String, dynamic>> compCollection =
-  FirebaseFirestore.instance.collection('complaints');
+      FirebaseFirestore.instance.collection('complaints');
 
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getComplaints() {
     return compCollection
+        .where('llUid', isEqualTo: ll_uid)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs);
+  }
+
+  // delete the response
+  Future<void> deleteDocument(String docId) async {
+    try {
+      await FirebaseFirestore.instance.collection('responses').doc(docId).delete();
+      UiHelper.showsnackbar(context, 'Response deleted successfully');
+      // Get.snackbar("Response", 'Document deleted successfully');
+    } catch (e) {
+      UiHelper.showsnackbar(context, 'Failed to delete response');
+      // Get.snackbar("Error", 'Failed to delete document: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Response Widget
     Widget response() {
       return Form(
         key: _formKey,
@@ -83,8 +99,7 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
               TextInputType.text,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return UiHelper.CustomAlertBox(
-                      (context), "response Against problem is Required");
+                  return "response Against problem is Required";
                 }
                 return null;
               },
@@ -96,8 +111,7 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
               isMultiline: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return UiHelper.CustomAlertBox(
-                      (context), "Message is Required");
+                  return "Message is Required";
                 }
                 return null;
               },
@@ -110,9 +124,8 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                   resMsgController.text.toString(),
                 );
               } else {
-                UiHelper.CustomAlertBox((context), "Something went wrong ?");
+                UiHelper.showsnackbar((context), "Something went wrong ?");
               }
-
             }, 'Send Response'),
             const SizedBox(height: 5),
             Divider(thickness: 2.0, color: Ccolor.primarycolor),
@@ -123,7 +136,7 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
-                      child: Text('Error: ${snapshot.error}'),
+                      child: SelectableText('Error: ${snapshot.error}'),
                     );
                   }
 
@@ -146,6 +159,7 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                       Map<String, dynamic> noteData =
                           snapshot.data![index].data();
                       String restitle = noteData['resTitle'];
+                      String docId = snapshot.data![index].id;
                       String resdescription = noteData['resMessage'];
 
                       return Card(
@@ -153,16 +167,32 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Problem:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
-                              Text(restitle,style: TextStyle(fontSize: 13,color: Ccolor.black)),
+                              Text("Problem:",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Ccolor.primarycolor)),
+                              Text(restitle,
+                                  style: TextStyle(
+                                      fontSize: 13, color: Ccolor.black)),
                             ],
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Description:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
-                              Text(resdescription,style: TextStyle(fontSize: 12,color: Ccolor.black)),
+                              Text("Description:",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Ccolor.primarycolor)),
+                              Text(resdescription,
+                                  style: TextStyle(
+                                      fontSize: 12, color: Ccolor.black)),
                             ],
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await deleteDocument(docId); // Delete the document from Firestore
+                            },
                           ),
                         ),
                       );
@@ -176,10 +206,9 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
       );
     }
 
-    // complaints
+    // complaints widget
     Widget complaints() {
-      return StreamBuilder<
-          List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
+      return StreamBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
         stream: getComplaints(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -204,8 +233,7 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              Map<String, dynamic> noteData =
-              snapshot.data![index].data();
+              Map<String, dynamic> noteData = snapshot.data![index].data();
               String comtitle = noteData['comTitle'];
               String comdescription = noteData['comMessage'];
 
@@ -214,15 +242,21 @@ class _LandlordComplaintBoxPageState extends State<LandlordComplaintBoxPage>
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Problem:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
-                      Text(comtitle,style: TextStyle(fontSize: 13,color: Ccolor.black)),
+                      Text("Problem:",
+                          style: TextStyle(
+                              fontSize: 14, color: Ccolor.primarycolor)),
+                      Text(comtitle,
+                          style: TextStyle(fontSize: 13, color: Ccolor.black)),
                     ],
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Flat,Room No,Description:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
-                      Text(comdescription,style: TextStyle(fontSize: 12,color: Ccolor.black)),
+                      Text("Flat,Room No,Description:",
+                          style: TextStyle(
+                              fontSize: 14, color: Ccolor.primarycolor)),
+                      Text(comdescription,
+                          style: TextStyle(fontSize: 12, color: Ccolor.black)),
                     ],
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rms/TenantPages/t_dashboard_page.dart';
@@ -74,100 +75,106 @@ class _TenantLoginPageState extends State<TenantLoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UiHelper.customAppbar("Tenant Login"),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              UiHelper.customLoginSignupTextField(
-                  _emailController,
-                  "Email",
-                  false,
-                  Icons.email,
-                  TextInputType.emailAddress, validator: (value) {
-                String pattern =
-                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                RegExp regExp = RegExp(pattern);
-                if (value == null || value.isEmpty) {
-                  return UiHelper.CustomAlertBox(
-                      (context), "Email is Required");
-                } else if (!regExp.hasMatch(value)) {
-                  return UiHelper.CustomAlertBox((context), "Invalid Email");
-                } else {
-                  return null;
-                }
-              }),
-              UiHelper.customLoginSignupTextField(
-                  _passwordController,
-                  "Password",
-                  true,
-                  Icons.password,
-                  TextInputType.visiblePassword, validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return UiHelper.CustomAlertBox(
-                      (context), "Password can't be empty");
-                } else if (value.length < 6) {
-                  return UiHelper.CustomAlertBox(
-                      (context), "Password must be longer than 6 characters");
-                }
-                return null;
-              }),
-              const SizedBox(height: 20),
-              UiHelper.CustomButton(
-                () {
-                  if (_formKey.currentState?.validate() == true) {
-                    // _signIn();
-                    _loginUser(_emailController.text, _passwordController.text, 'tenant');
+      body: DoubleBackToCloseApp(
+        snackBar: SnackBar(
+          backgroundColor: Ccolor.red,
+          content: Text('Tap back again to leave'),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                UiHelper.customLoginSignupTextField(
+                    _emailController,
+                    "Email",
+                    false,
+                    Icons.email,
+                    TextInputType.emailAddress, validator: (value) {
+                  String pattern =
+                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                  RegExp regExp = RegExp(pattern);
+                  if (value == null || value.isEmpty) {
+                    return UiHelper.CustomAlertBox(
+                        (context), "Email is Required");
+                  } else if (!regExp.hasMatch(value)) {
+                    return UiHelper.CustomAlertBox((context), "Invalid Email");
                   } else {
-                    UiHelper.CustomAlertBox((context), "Something went wrong ?");
+                    return null;
                   }
-                },
-                "Login",
-              ),
-              const SizedBox(height: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("I don't have an Account  ",
-                      style: TextStyle(fontSize: 16)),
-                  InkWell(
-                    onTap: () {
+                }),
+                UiHelper.customLoginSignupTextField(
+                    _passwordController,
+                    "Password",
+                    true,
+                    Icons.password,
+                    TextInputType.visiblePassword, validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return UiHelper.CustomAlertBox(
+                        (context), "Password can't be empty");
+                  } else if (value.length < 6) {
+                    return UiHelper.CustomAlertBox(
+                        (context), "Password must be longer than 6 characters");
+                  }
+                  return null;
+                }),
+                const SizedBox(height: 20),
+                UiHelper.CustomButton(
+                  () {
+                    if (_formKey.currentState?.validate() == true) {
+                      // _signIn();
+                      _loginUser(_emailController.text, _passwordController.text, 'tenant');
+                    } else {
+                      UiHelper.CustomAlertBox((context), "Something went wrong ?");
+                    }
+                  },
+                  "Login",
+                ),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("I don't have an Account  ",
+                        style: TextStyle(fontSize: 16)),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TenantRegistrationPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Register",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Ccolor.primarycolor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                TextButton(
+                    onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => TenantRegistrationPage(),
-                        ),
+                        MaterialPageRoute(builder: (context) => const ForgotPassword()),
                       );
                     },
                     child: Text(
-                      "Register",
+                      "Forgot Password",
                       style: TextStyle(
                         fontSize: 16,
                         color: Ccolor.primarycolor,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
-                  )
-                ],
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ForgotPassword()),
-                    );
-                  },
-                  child: Text(
-                    "Forgot Password",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Ccolor.primarycolor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )),
-            ],
+                    )),
+              ],
+            ),
           ),
         ),
       ),

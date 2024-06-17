@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'custom_colors.dart';
 
 class UiHelper {
@@ -13,7 +12,8 @@ class UiHelper {
             color: Ccolor.white,
             fontWeight: FontWeight.bold,
             fontSize: 18,
-            letterSpacing: 0.8),
+            letterSpacing: 0.8,
+          ),
       ),
       centerTitle: true,
       iconTheme: IconThemeData(color: Ccolor.white, size: 25.0),
@@ -24,9 +24,8 @@ class UiHelper {
       TextEditingController controller,
       String text,
       TextInputType inputType,
-      {String? Function(String?)? validator,
-        bool isMultiline = false
-      }) {
+      {String? Function(String?)? validator,bool isMultiline = false}
+      ) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: SizedBox(
@@ -35,7 +34,6 @@ class UiHelper {
           controller: controller,
           keyboardType: inputType,
           validator: validator,
-          maxLines: isMultiline ? 3 : 1,
           style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(
             labelText: text,
@@ -87,6 +85,7 @@ class UiHelper {
   }
 
   // custom button
+  // ignore: non_constant_identifier_names
   static CustomButton(VoidCallback voidcallback, String text) {
     return ElevatedButton(
       onPressed: () {
@@ -105,6 +104,7 @@ class UiHelper {
   }
 
   // custom alert box
+  // ignore: non_constant_identifier_names
   static CustomAlertBox(BuildContext context, String text) {
     return showDialog(
         context: context,
@@ -210,6 +210,13 @@ class UiHelper {
           ),
         ),
       ),
+    );
+  }
+
+  // scaffold messenger
+  static showsnackbar(BuildContext context, String msg){
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg))
     );
   }
 }

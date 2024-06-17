@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rms/customui/check_slider.dart';
+import 'package:rms/GetX/get_controller.dart';
 
 import '../customui/custom_colors.dart';
 import '../customui/uihelper.dart';
@@ -44,17 +45,6 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   List<XFile>? _imageList = [];
-
-  Future<void> pickImages() async {
-    final List<XFile>? pickedImages =
-        await ImagePicker().pickMultiImage(imageQuality: 50);
-
-    if (pickedImages != null && pickedImages.isNotEmpty) {
-      setState(() {
-        _imageList = pickedImages;
-      });
-    }
-  }
 
   Future<void> uploadAvailableRooms() async {
     if (_imageList != null && _imageList!.isNotEmpty) {
@@ -153,6 +143,8 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
 
   @override
   Widget build(BuildContext context) {
+    final GetController controller = Get.put(GetController());
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -175,29 +167,23 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   child: Column(
                     children: [
                       // here in this column i want to pick image from gallery
-                      if (_imageList != null && _imageList!.isNotEmpty)
-                        CarouselSlider(
+                      Obx(() {
+                        final imageList = controller.imageList;
+                        return CarouselSlider(
+                          items: imageList?.map((XFile image) {
+                                return Image.file(File(image.path));
+                              }).toList() ??
+                              [],
                           options: CarouselOptions(
                             height: 315.0,
-                            // enlargeCenterPage: true,
+                            viewportFraction: 1.0,
+                            initialPage: 0,
+                            autoPlay: true,
+                            enableInfiniteScroll: false,
+                            scrollDirection: Axis.horizontal,
                           ),
-                          items: _imageList!.map((XFile image) {
-                            return Builder(
-                              builder: (BuildContext context) {
-                                return Container(
-                                  height: 315,
-                                  width: MediaQuery.of(context).size.width,
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 5.0),
-                                  child: Image.file(
-                                    File(image.path),
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
-                        ),
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -205,7 +191,10 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25),
                   child: ElevatedButton(
-                    onPressed: () => pickImages(),
+                    onPressed: () {
+                      GetController methodController = Get.find();
+                      methodController.pickImages();
+                    },
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -224,11 +213,9 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                     String pattern = r'(^[0-9]*$)';
                     RegExp regExp = RegExp(pattern);
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Total Rent is required");
+                      return "Total Rent is required";
                     } else if (!regExp.hasMatch(value)) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Total Rent must be in digits");
+                      return "Total Rent must be in digits";
                     }
                     return null;
                   },
@@ -239,8 +226,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   TextInputType.text,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Building name is Required");
+                      return "Building name is Required";
                     }
                     return null;
                   },
@@ -253,11 +239,9 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                     String pattern = r'(^[0-9]*$)';
                     RegExp regExp = RegExp(pattern);
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Available room is required");
+                      return "Available room is required";
                     } else if (!regExp.hasMatch(value)) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Available room must be in digits");
+                      return "Available room must be in digits";
                     }
                     return null;
                   },
@@ -272,8 +256,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Furniture selection is Required");
+                      return "Furniture selection is Required";
                     }
                     return null;
                   },
@@ -288,8 +271,7 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Availability selection is Required");
+                      return "Availability selection is Required";
                     }
                     return null;
                   },
@@ -304,21 +286,18 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Parking selection is Required");
+                      return "Parking selection is Required";
                     }
                     return null;
                   },
                 ),
                 UiHelper.CustomTextField(
                   descAboutRoomCtr,
-                  "Description About Room",
+                  "Description",
                   TextInputType.text,
-                  isMultiline: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Description is Required");
+                      return "Description is Required";
                     }
                     return null;
                   },
@@ -327,11 +306,9 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   nearbyAddressCtr,
                   "Nearby Address",
                   TextInputType.text,
-                  isMultiline: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Nearby address is Required");
+                      return "Nearby address is Required";
                     }
                     return null;
                   },
@@ -340,11 +317,9 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                   fullAddressCtr,
                   "Full Address",
                   TextInputType.text,
-                  isMultiline: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Full address is Required");
+                      return "Full address is Required";
                     }
                     return null;
                   },
@@ -357,14 +332,11 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                     String pattern = r'(^[0-9]*$)';
                     RegExp regExp = RegExp(pattern);
                     if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Mobile number is required");
+                      return "Mobile number is required";
                     } else if (value.length != 10) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Mobile number must be in 10 digits");
+                      return "Mobile number must be in 10 digits";
                     } else if (!regExp.hasMatch(value)) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Mobile number must be in digits");
+                      return "Mobile number must be in digits";
                     }
                     return null;
                   },
@@ -376,13 +348,13 @@ class _LandlordAddRoomPageState extends State<LandlordAddRoomPage> {
                     ProgressDialog.show(context);
 
                     // Simulate an asynchronous operation, such as uploading data to Firebase
-                    await Future.delayed(Duration(seconds: 7));
+                    await Future.delayed(const Duration(seconds: 7));
 
                     // Once the operation is complete, hide the dialog
+                    // ignore: use_build_context_synchronously
                     ProgressDialog.hide(context);
                   } else {
-                    UiHelper.CustomAlertBox(
-                        (context), "Something went wrong ?");
+                    UiHelper.showsnackbar(context, "Something went wrong ?");
                   }
                 }, "Submit"),
                 const SizedBox(height: 20),
@@ -402,7 +374,7 @@ class ProgressDialog {
       barrierDismissible:
           false, // Set to true if you want users to be able to dismiss the dialog by tapping outside
       builder: (BuildContext context) {
-        return AlertDialog(
+        return const AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

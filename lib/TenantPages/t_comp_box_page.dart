@@ -45,7 +45,7 @@ class _TenantComplaintBoxPageState extends State<TenantComplaintBoxPage>
       'comMessage': comMessage,
       'timestamp': FieldValue.serverTimestamp(),
     }).then((value) {
-      UiHelper.CustomAlertBox(context, "Complaint is send to your landlord");
+      UiHelper.showsnackbar(context, "Complaint is send to your landlord");
     });
     comTitleController.clear();
     comMsgController.clear();
@@ -57,6 +57,7 @@ class _TenantComplaintBoxPageState extends State<TenantComplaintBoxPage>
 
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getComplaints() {
     return compCollection
+        .where('tUid', isEqualTo: t_uid)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs);
@@ -67,9 +68,20 @@ class _TenantComplaintBoxPageState extends State<TenantComplaintBoxPage>
 
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getResponse() {
     return resCollection
+        .where('llUid', isEqualTo: widget.lluid)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs);
+  }
+
+  // delete the complaints
+  Future<void> deleteDocument(String docId) async {
+    try {
+      await FirebaseFirestore.instance.collection('complaints').doc(docId).delete();
+      UiHelper.showsnackbar(context, 'Complaint deleted successfully');
+    } catch (e) {
+      UiHelper.showsnackbar(context, 'Failed to delete complaint ${e.toString()}');
+    }
   }
 
   @override
@@ -149,6 +161,7 @@ class _TenantComplaintBoxPageState extends State<TenantComplaintBoxPage>
                       Map<String, dynamic> noteData =
                       snapshot.data![index].data();
                       String comtitle = noteData['comTitle'];
+                      String docId = snapshot.data![index].id;
                       String comdescription = noteData['comMessage'];
 
                       return Card(
@@ -166,6 +179,12 @@ class _TenantComplaintBoxPageState extends State<TenantComplaintBoxPage>
                               Text("Flat,Room No,Description:",style: TextStyle(fontSize: 14,color: Ccolor.primarycolor)),
                               Text(comdescription,style: TextStyle(fontSize: 12,color: Ccolor.black)),
                             ],
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              await deleteDocument(docId); // Delete the document from Firestore
+                            },
                           ),
                         ),
                       );

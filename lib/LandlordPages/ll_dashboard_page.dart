@@ -228,7 +228,8 @@ class _LandlordDashboardPageState extends State<LandlordDashboardPage> {
         ],
       ),
       body: DoubleBackToCloseApp(
-        snackBar: const SnackBar(
+        snackBar: SnackBar(
+          backgroundColor: Ccolor.red,
           content: Text('Tap back again to leave'),
         ),
         child: <Widget>[

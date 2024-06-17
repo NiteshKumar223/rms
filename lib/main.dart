@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rms/LandlordPages/ll_login_page.dart';
 import 'package:rms/customui/uihelper.dart';
 import 'GuestPages/g_dashboard_page.dart';
@@ -7,12 +8,12 @@ import 'TenantPages/t_login_page.dart';
 import 'check_user.dart';
 import 'firebase_options.dart';
 
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  await dotenv.load(fileName: "assets/.env");
   runApp(const MyApp());
 }
 

@@ -1,6 +1,8 @@
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rms/TenantPages/t_login_page.dart';
 
 import '../customui/custom_colors.dart';
 import '../customui/uihelper.dart';
@@ -66,127 +68,158 @@ class _TenantRegistrationPageState extends State<TenantRegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: UiHelper.customAppbar("Tenant Registration"),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                UiHelper.CustomTextField(
-                  ll_uidController,
-                  "Landlord ID",
-                  TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox((context),
-                          "Landlord ID is must, which is provided by your landlord.");
-                    }
-                    return null;
-                  },
-                ),
-                UiHelper.CustomTextField(
-                  tRoomNoController,
-                  "Room No.",
-                  TextInputType.number,
+      body: DoubleBackToCloseApp(
+        snackBar: SnackBar(
+          backgroundColor: Ccolor.red,
+          content: Text('Tap back again to leave'),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 10),
+                  UiHelper.CustomTextField(
+                    ll_uidController,
+                    "Landlord ID",
+                    TextInputType.text,
                     validator: (value) {
-                      String pattern = r'(^[0-9]*$)';
-                      RegExp regExp = RegExp(pattern);
                       if (value == null || value.isEmpty) {
-                        return UiHelper.CustomAlertBox((context), "Room number is Required");
-                      } else if (!regExp.hasMatch(value)) {
-                        return UiHelper.CustomAlertBox((context), "Room number must be in digits");
+                        return UiHelper.CustomAlertBox((context),
+                            "Landlord ID is must, which is provided by your landlord.");
                       }
                       return null;
                     },
-                ),
-                UiHelper.CustomTextField(
-                  tNameController,
-                  "Name",
-                  TextInputType.text,
-                  validator: (value) {
-                    String pattern = r'(^[a-zA-Z ]*$)';
-                    RegExp regExp = RegExp(pattern);
-                    if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Name is Required");
-                    } else if (!regExp.hasMatch(value)) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Name must be a-z and A-Z");
-                    }
-                    return null;
-                  },
-                ),
-                UiHelper.CustomTextField(
-                    tMobController, "Mobile No.", TextInputType.number,
+                  ),
+                  UiHelper.CustomTextField(
+                    tRoomNoController,
+                    "Room No.",
+                    TextInputType.number,
+                      validator: (value) {
+                        String pattern = r'(^[0-9]*$)';
+                        RegExp regExp = RegExp(pattern);
+                        if (value == null || value.isEmpty) {
+                          return UiHelper.CustomAlertBox((context), "Room number is Required");
+                        } else if (!regExp.hasMatch(value)) {
+                          return UiHelper.CustomAlertBox((context), "Room number must be in digits");
+                        }
+                        return null;
+                      },
+                  ),
+                  UiHelper.CustomTextField(
+                    tNameController,
+                    "Name",
+                    TextInputType.text,
                     validator: (value) {
-                      String pattern = r'(^[0-9]*$)';
+                      String pattern = r'(^[a-zA-Z ]*$)';
                       RegExp regExp = RegExp(pattern);
                       if (value == null || value.isEmpty) {
-                        return UiHelper.CustomAlertBox((context), "Mobile is Required");
-                      } else if (value.length != 10) {
-                        return UiHelper.CustomAlertBox((context), "Mobile number must 10 digits");
+                        return UiHelper.CustomAlertBox(
+                            (context), "Name is Required");
                       } else if (!regExp.hasMatch(value)) {
-                        return UiHelper.CustomAlertBox((context), "Mobile Number must be in digits");
+                        return UiHelper.CustomAlertBox(
+                            (context), "Name must be a-z and A-Z");
                       }
                       return null;
-                    }
-                ),
-                UiHelper.CustomTextField(tAddressController,
-                    "Permanent Address", TextInputType.text,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return UiHelper.CustomAlertBox(
-                          (context), "Permanent address is Required");
-                    }
-                    return null;
-                  },
-                ),
-                UiHelper.customLoginSignupTextField(tEmailController,
-                    "Email Id", false, Icons.email, TextInputType.emailAddress,
-                    validator: (value){
-                      String pattern =
-                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-                      RegExp regExp = RegExp(pattern);
-                      if (value == null || value.isEmpty) {
-                        return UiHelper.CustomAlertBox((context), "Email is Required");
-                      } else if (!regExp.hasMatch(value)) {
-                        return UiHelper.CustomAlertBox((context), "Invalid Email");
-                      } else {
+                    },
+                  ),
+                  UiHelper.CustomTextField(
+                      tMobController, "Mobile No.", TextInputType.number,
+                      validator: (value) {
+                        String pattern = r'(^[0-9]*$)';
+                        RegExp regExp = RegExp(pattern);
+                        if (value == null || value.isEmpty) {
+                          return UiHelper.CustomAlertBox((context), "Mobile is Required");
+                        } else if (value.length != 10) {
+                          return UiHelper.CustomAlertBox((context), "Mobile number must 10 digits");
+                        } else if (!regExp.hasMatch(value)) {
+                          return UiHelper.CustomAlertBox((context), "Mobile Number must be in digits");
+                        }
                         return null;
                       }
-                    }
-                ),
-                UiHelper.customLoginSignupTextField(
-                    tPasswordController,
-                    "Password",
-                    true,
-                    Icons.password,
-                    TextInputType.visiblePassword,
-                    validator: (value){
-                      if(value == null || value.isEmpty){
-                        return UiHelper.CustomAlertBox((context), "Password can't be empty");
-                      } else if (value.length < 6){
-                        return UiHelper.CustomAlertBox((context), "Password must be longer than 6 characters");
+                  ),
+                  UiHelper.CustomTextField(tAddressController,
+                      "Permanent Address", TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return UiHelper.CustomAlertBox(
+                            (context), "Permanent address is Required");
                       }
                       return null;
-                    }
+                    },
+                  ),
+                  UiHelper.customLoginSignupTextField(tEmailController,
+                      "Email Id", false, Icons.email, TextInputType.emailAddress,
+                      validator: (value){
+                        String pattern =
+                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                        RegExp regExp = RegExp(pattern);
+                        if (value == null || value.isEmpty) {
+                          return UiHelper.CustomAlertBox((context), "Email is Required");
+                        } else if (!regExp.hasMatch(value)) {
+                          return UiHelper.CustomAlertBox((context), "Invalid Email");
+                        } else {
+                          return null;
+                        }
+                      }
+                  ),
+                  UiHelper.customLoginSignupTextField(
+                      tPasswordController,
+                      "Password",
+                      true,
+                      Icons.password,
+                      TextInputType.visiblePassword,
+                      validator: (value){
+                        if(value == null || value.isEmpty){
+                          return UiHelper.CustomAlertBox((context), "Password can't be empty");
+                        } else if (value.length < 6){
+                          return UiHelper.CustomAlertBox((context), "Password must be longer than 6 characters");
+                        }
+                        return null;
+                      }
+                  ),
+                  const SizedBox(height: 20),
+                  UiHelper.CustomButton(
+                    () {
+                      if (_formKey.currentState?.validate() == true) {
+                        register();
+                      } else {
+                        UiHelper.CustomAlertBox((context), "Something went wrong ?");
+                      }
+                    },
+                    "Register",
+                  ),
+                  const SizedBox(height: 50),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("I don't have an Account  ",
+                        style: TextStyle(fontSize: 16)),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TenantLoginPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Ccolor.primarycolor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 20),
-                UiHelper.CustomButton(
-                  () {
-                    if (_formKey.currentState?.validate() == true) {
-                      register();
-                    } else {
-                      UiHelper.CustomAlertBox((context), "Something went wrong ?");
-                    }
-                  },
-                  "Register",
-                ),
-                const SizedBox(height: 50),
-              ],
+                ],
+              ),
             ),
           ),
         ),
