@@ -189,11 +189,14 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
 
       setState(() {
         tenantData = tenants;
+
       });
     } catch (e) {
       UiHelper.showsnackbar(context, 'Error fetching tenant names: $e');
     }
   }
+
+  
 
   showQr() async {
     await showDialog<String>(
@@ -286,7 +289,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
                             value: selectedTenant,
                             items: tenantData.map((tenant) {
                               return DropdownMenuItem<String>(
-                                value: tenant['mobile'],
+                                value: tenant['name'],
                                 child: Text(
                                     '${tenant['name']} (${tenant['mobile']})'),
                               );
@@ -316,6 +319,7 @@ class _LandlordCollectPageState extends State<LandlordCollectPage> {
                     ),
                   ),
                   // Text("${selectedTenant}'s previous ele Unit is $preEleUnit"),
+                  
                   UiHelper.CustomTextField(
                     elePreMtrController,
                     "Previous Meter Reading",
